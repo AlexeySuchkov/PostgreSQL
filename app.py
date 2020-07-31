@@ -4,10 +4,10 @@ from data import students_list, course_list
 
 def create_db():
     with psycopg2.connect(database='psql', user='psql', password='12345', host='pg.codecontrol.ru', port=59432) as conn:
-        tables = {'course': "CREATE TABLE course(id integer NOT NULL, name varchar(100) NOT NULL);",
-                  'student': "CREATE TABLE student(id integer NOT NULL, name varchar(100) NOT NULL, "
+        tables = {'course': "CREATE TABLE course(id integer PRIMARY KEY NOT NULL, name varchar(100) NOT NULL);",
+                  'student': "CREATE TABLE student(id integer PRIMARY KEY NOT NULL, name varchar(100) NOT NULL, "
                              "gpa numeric(10, 2), birth timestamp with time zone);",
-                  'student_course': "CREATE TABLE student_course(course_id integer NOT NULL, "
+                  'student_course': "CREATE TABLE student_course(course_id integer PRIMARY KEY NOT NULL, "
                                     "student_id integer NOT NULL);"
                   }
         with conn.cursor() as curs:
@@ -34,7 +34,7 @@ def get_students(course_id):
         with conn.cursor() as curs:
             curs.execute("select student.name, course.name from student join student_course on "
                          "student.id = student_course.student_id join course on "
-                         "course.id = student_course.course_id where course.id = %s" % course_id)
+                         "course.id = student_course.course_id", (course_id,))
             data = curs.fetchall()
             if data:
                 for row in data:
