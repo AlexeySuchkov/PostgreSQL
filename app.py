@@ -34,7 +34,7 @@ def get_students(course_id):
         with conn.cursor() as curs:
             curs.execute("select student.name, course.name from student join student_course on "
                          "student.id = student_course.student_id join course on "
-                         "course.id = student_course.course_id", (course_id,))
+                         "course.id = student_course.course_id where course_id=%s", (course_id,))
             data = curs.fetchall()
             if data:
                 for row in data:
@@ -85,7 +85,7 @@ def get_student(student_id):
         with conn.cursor() as curs:
             curs.execute("select student.name, student.gpa, student.birth, course.name from student join "
                          "student_course on student.id=student_course.student_id join course on "
-                         "course.id=student_course.course_id where student_course.student_id=%s" % student_id)
+                         "course.id=student_course.course_id where student_course.student_id=%s", (student_id,))
             result_query = curs.fetchall()
             if len(result_query) == 1:
                 print('Имя:', result_query[0][0])
